@@ -92,5 +92,31 @@ Investigated multiple IPs with brute force behavior:
 
 14.103.132.101
 
-🔍 Success Check Query
+### 🔍 Success Check Query
+```kql
+DeviceLogonEvents
+| where RemoteIP in ("218.92.0.187", "194.180.48.85", "196.251.84.225", "1.194.210.131", "185.7.214.81", "14.103.132.101")
+| where ActionType != "LogonFailed"
+```
+### ✅ No successful logons found — brute force attempts unsuccessful.
+---
+### 🔐 Containment, Eradication, and Recovery
+- I isolated all affected devices in MDE to prevent any damage from spreading. 
+- Conducted an antivirus search. 
+- Updated Network Security Group (NSG) to prevent RDP attempts from public IPs by using Azure policy. 
+- After isolation, and updating NSG, I took the machines out of isolation with no threats related to the incident. 
+---
+
+### 📊 Post-Incident Summary
+
+There were 6 different IP addresses found with the brute force. The incident was marked as True Positive — brute force activity detected, but no system compromise occurred. All findings were documented and lessons learned recorded.
+
+---
+
+### 🧠 Lessons Learned
+Early detection and automation helped mitigate risk
+
+Sentinel rules can be tuned to different thresholds depending on the use case
+
+PowerShell simulations are effective for testing alert logic
 
