@@ -39,3 +39,58 @@ DeviceLogonEvents
 
 🔁 Stop query after alert is triggered (24h)
 
+---
+
+## 🚨Part 2: Trigger Alert with PowerShell
+I simulate brute force attempts using a script that triggers failed logon events on the local machine.
+
+🧪 PowerShell Simulation Script
+```powershell
+# Simulate failed logon attempts to a local user account
+# Replace "2Phishing-Lab-MC" with a real local account on your VM
+
+$TargetUsername = "2Phishing-Lab-MC"
+$PasswordList = @("Password1", "123456", "admin", "letmein", "qwerty")
+
+foreach ($password in $PasswordList) {
+    Write-Host "Attempting login with password: $password"
+    
+    try {
+        $securePassword = ConvertTo-SecureString $password -AsPlainText -Force
+        $cred = New-Object System.Management.Automation.PSCredential($TargetUsername, $securePassword)
+
+        # Attempt to trigger a failed login
+        Invoke-Command -ComputerName localhost -ScriptBlock { Get-Service } -Credential $cred -ErrorAction Stop
+    } catch {
+        Write-Host "Failed login attempt recorded."
+    }
+
+    Start-Sleep -Seconds 2
+}
+```
+---
+## 🧯Part 3: Incident Response
+Action taken in accordance with NIST 800-161: Incident Response Lifecycle: 
+
+### 📌 Preparation
+Incident response plan ready and VM onboarded to Microsoft Defender for Endpoint with Sentinel alert rule deployed.
+
+🕵️ Detection & Analysis
+Assigned incident to self and changed status to Active
+
+Investigated multiple IPs with brute force behavior:
+
+218.92.0.187
+
+194.180.48.85
+
+196.251.84.225
+
+1.194.210.131
+
+185.7.214.81
+
+14.103.132.101
+
+🔍 Success Check Query
+
