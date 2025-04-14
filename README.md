@@ -75,8 +75,8 @@ Action taken in accordance with NIST 800-161: Incident Response Lifecycle:
 ### 📌 Preparation
 Incident response plan ready and VM onboarded to Microsoft Defender for Endpoint with Sentinel alert rule deployed.
 
-🕵️ Detection & Analysis
-Assigned incident to self and changed status to Active
+### 🕵️ Detection & Analysis
+Identified incident and used Action to assign investigation to myself and set status to active.
 
 Investigated multiple IPs with brute force behavior:
 
