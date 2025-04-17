@@ -10,7 +10,7 @@ When a user attempts to log into the VM, the event is logged locally and sent to
 
 ## ⚙️ Part 1: Brute Force Detection (Alert Creation)
 
-KQL query designed to detect failed logon attempts from the same IP address to the same host at least 75 times within 5 hours.
+The KQL query designed to detect failed logon attempts from the same IP address to the same host at least 75 times within 5 hours.
 
 ### 📄 KQL Query
 ```kql
@@ -42,31 +42,47 @@ DeviceLogonEvents
 ---
 
 ## 🚨Part 2: Trigger Alert with PowerShell
-I simulate brute force attempts using a script that triggers failed logon events on the local machine.
+Simulate brute force attempts using a script that triggers failed logon events. 
 
-🧪 PowerShell Simulation Script
+🧪 PowerShell Brute Force Simulation Script
 ```powershell
-# Simulate failed logon attempts to a local user account
-# Replace "2Phishing-Lab-MC" with a real local account on your VM
+# BruteForce-Simulation.ps1
+# Simulates failed login attempts using ValidateCredentials() to trigger Windows Security Event ID 4625
+# Intended for brute-force detection labs in Windows environments (e.g., Defender for Endpoint, Microsoft Sentinel)
 
+<#
+.NOTES
+    Author: Maurice Carter
+    LinkedIn: https://linkedin.com/in/cmcarter38
+    GitHub: https://github.com/mauricecarter1
+    Date Created: 2025-04-13
+    Last Modified: 2025-04-13
+  
+#>
+
+Add-Type -AssemblyName System.DirectoryServices.AccountManagement
+
+# Replace "2Phishing-Lab-MC" with the name of a valid local user account on your lab machine 
 $TargetUsername = "2Phishing-Lab-MC"
+
 $PasswordList = @("Password1", "123456", "admin", "letmein", "qwerty")
 
 foreach ($password in $PasswordList) {
-    Write-Host "Attempting login with password: $password"
-    
-    try {
-        $securePassword = ConvertTo-SecureString $password -AsPlainText -Force
-        $cred = New-Object System.Management.Automation.PSCredential($TargetUsername, $securePassword)
+    Write-Host "Trying password: $password"
 
-        # Attempt to trigger a failed login
-        Invoke-Command -ComputerName localhost -ScriptBlock { Get-Service } -Credential $cred -ErrorAction Stop
-    } catch {
-        Write-Host "Failed login attempt recorded."
+    $context = New-Object System.DirectoryServices.AccountManagement.PrincipalContext('Machine', $env:COMPUTERNAME)
+    $result = $context.ValidateCredentials($TargetUsername, $password)
+
+    if ($result) {
+        Write-Host "✅ Successful login with password: $password"
+    } else {
+        Write-Host "❌ Failed login recorded."
     }
 
     Start-Sleep -Seconds 2
 }
+
+
 ```
 ---
 ## 🧯Part 3: Incident Response
