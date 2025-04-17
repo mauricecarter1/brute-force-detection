@@ -46,7 +46,7 @@ Simulate brute force attempts using a script that triggers failed logon events.
 
 🧪 PowerShell Brute Force Simulation Script
 ```powershell
-# BruteForce-Simulation.ps1
+# Brute-Force-Simulation.ps1
 # Simulates failed login attempts using ValidateCredentials() to trigger Windows Security Event ID 4625
 # Intended for brute-force detection labs in Windows environments (e.g., Defender for Endpoint, Microsoft Sentinel)
 
